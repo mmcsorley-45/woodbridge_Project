@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+}
+
+header {
+  background-color: #004080;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 80px); /* Adjust for header */
+}
+
+#map {
+  flex: 2;
+  height: 100%;
+  border-right: 2px solid #ccc;
+}
+
+#ticket-list {
+  flex: 1;
+  background: #fff;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+#ticket-list h2 {
+  margin-top: 0;
+}
+
+#tickets {
+  list-style: none;
+  padding: 0;
+}
+
+#tickets li {
+  background: #eef;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-left: 4px solid #004080;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+#tickets li:hover {
+  background: #dde;
+}
+#tickets li div {
+  transition: all 0.3s ease;
+}
+
+#tickets li div:nth-child(2) {
+  background-color: #f9f9f9;
+  padding: 5px;
+  border-top: 1px solid #ccc;
+  margin-top: 5px;
+  display: none;
+}
