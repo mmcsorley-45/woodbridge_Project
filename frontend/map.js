@@ -1,9 +1,12 @@
-const map = L.map('map').setView([40.5548, -74.2925], 13);
+// Initialize the map
+const map = L.map('map').setView([40.5549, -74.2761], 13);
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data © OpenStreetMap contributors'
+  attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-let markerMap = {};  // For clicking from list → map
+// Store markers by ticket ID
+const markerMap = {};
 
 fetch('/tickets')
   .then(res => res.json())
@@ -11,56 +14,79 @@ fetch('/tickets')
     const activeTickets = tickets.filter(t => t.status !== 'closed');
 
     activeTickets.forEach(ticket => {
-  const { latitude, longitude, location_name } = ticket;
+      const {
+        id,
+        latitude,
+        longitude,
+        location_name,
+        issue,
+        description,
+        status,
+        assigned_to,
+        assigned_by,
+        location_id
+      } = ticket;
 
-  const popup = `
-    <strong>${location_name}</strong><br>
-    <em>${ticket.issue}</em><br>
-    Assigned to: ${ticket.assigned_to || "N/A"}
-  `;
+      // Create marker & popup
+      const popup = `
+        <strong>${location_name}</strong><br>
+        <em>${issue}</em><br>
+        Assigned to: ${assigned_to || "N/A"}
+      `;
 
-  const marker = L.marker([latitude, longitude]).addTo(map)
-    .bindPopup(popup);
+      const marker = L.marker([latitude, longitude]).addTo(map)
+        .bindPopup(popup);
 
-  markerMap[ticket.id] = marker;
+      markerMap[id] = marker;
 
-  const ticketList = document.getElementById('tickets');
+      // Build ticket list item
+      const ticketList = document.getElementById('tickets');
+      const li = document.createElement('li');
+      li.setAttribute('data-ticket-id', id);
 
-  // Create outer list item
-  const li = document.createElement('li');
+      const summary = document.createElement('div');
+      summary.textContent = `${issue} (${location_name})`;
+      summary.style.cursor = 'pointer';
 
-  // Add summary info
-  const summary = document.createElement('div');
-  summary.textContent = `${ticket.issue} (${location_name})`;
-  summary.style.cursor = 'pointer';
+      const details = document.createElement('div');
+      details.style.display = 'none';
+      details.innerHTML = `
+        <strong>Description:</strong> ${description}<br>
+        <strong>Status:</strong> ${status}<br>
+        <strong>Assigned To:</strong> ${assigned_to || 'N/A'}<br>
+        <strong>Assigned By:</strong> ${assigned_by || 'N/A'}<br>
+        <strong>Location ID:</strong> ${location_id}<br>
+        <button class="complete-btn">✅ Complete</button>
+      `;
 
-  // Add detail dropdown
-  const details = document.createElement('div');
-  details.style.display = 'none';
-  details.style.marginTop = '8px';
-  details.style.fontSize = '0.9rem';
+      // Expand/collapse and zoom to marker
+      summary.onclick = () => {
+        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        map.setView([latitude, longitude], 16);
+        marker.openPopup();
+      };
 
-  details.innerHTML = `
-    <strong>Description:</strong> ${ticket.description}<br>
-    <strong>Status:</strong> ${ticket.status}<br>
-    <strong>Assigned To:</strong> ${ticket.assigned_to || 'N/A'}<br>
-    <strong>Assigned By:</strong> ${ticket.assigned_by || 'N/A'}<br>
-    <strong>Location ID:</strong> ${ticket.location_id}
-  `;
+      li.appendChild(summary);
+      li.appendChild(details);
+      ticketList.appendChild(li);
 
-  summary.onclick = () => {
-    // Toggle dropdown
-    details.style.display = details.style.display === 'none' ? 'block' : 'none';
-    // Center map and open marker popup
-    map.setView([latitude, longitude], 16);
-    marker.openPopup();
-  };
-
-  li.appendChild(summary);
-  li.appendChild(details);
-  ticketList.appendChild(li);
-});
-  })
-  .catch(err => {
-    console.error('Error fetching tickets:', err);
+      // Handle "Complete" button
+      details.querySelector('.complete-btn').onclick = () => {
+        fetch(`/tickets/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'closed' })
+        })
+          .then(res => {
+            if (!res.ok) throw new Error("Failed to update ticket.");
+            // Remove marker and list item
+            map.removeLayer(marker);
+            li.remove();
+          })
+          .catch(err => {
+            alert("❌ Could not complete ticket.");
+            console.error(err);
+          });
+      };
+    });
   });

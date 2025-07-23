@@ -45,7 +45,7 @@ def create_ticket():
         status=data.get('status', 'open'),
         assigned_to=data.get('assigned_to'),
         assigned_by=data.get('assigned_by'),
-        location_id=data['location_id']
+        location_type=data['location_type']
     )
     db.session.add(ticket)
     db.session.commit()
@@ -81,11 +81,21 @@ def serialize_ticket(ticket):
         'date_created': ticket.date_created.isoformat(),
         'date_closed': ticket.date_closed.isoformat() if ticket.date_closed else None,
         'location_id': ticket.location_id,
+        'location_type': ticket.location.type,
         'location_name': ticket.location.name,
         'latitude': ticket.location.latitude,
         'longitude': ticket.location.longitude
     }
-
+@app.route('/locations', methods=['GET'])
+def get_locations():
+    locations = Location.query.all()
+    return jsonify([{
+        'id': loc.id,
+        'name': loc.name,
+        'type': loc.type,
+        'latitude': loc.latitude,
+        'longitude': loc.longitude
+    } for loc in locations])
 # ------------------ RUN APP ------------------
 
 if __name__ == '__main__':

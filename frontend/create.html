@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Ticket</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Create New Ticket</h1>
+  </header>
+
+  <main class="form-container">
+    <form id="ticket-form">
+      <input type="text" id="issue" placeholder="Issue" required />
+      <textarea id="description" placeholder="Description" required></textarea>
+      <input type="text" id="assigned_to" placeholder="Assigned To" />
+      <input type="text" id="assigned_by" placeholder="Assigned By" />
+
+      <select id="type-select" required>
+        <option value="">-- Select Type --</option>
+        <option value="HQ">Town Hall </option>
+        <option value="community">Community Building</option>
+        <option value="senior">Senior Center</option>
+        <option value="fire">Fire Station</option>
+        <option value="pool">Pool</option>
+      </select>
+
+      <select id="location_id" required>
+        <option value="">-- Select Location --</option>
+        <option value="">-- Select Location --</option>
+      </select>
+
+      <div class="button-group">
+        <button type="submit">Create Ticket</button>
+        <button type="button" onclick="window.location.href='/'">Cancel</button>
+      </div>
+    </form>
+  </main>
+
+  <script src="create.js"></script>
+</body>
+</html>

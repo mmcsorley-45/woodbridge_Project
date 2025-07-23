@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ticket Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎫 All Tickets Dashboard</h1>
+    <a href="/" style="text-decoration:none;">← Back to Map</a>
+  </header>
+
+  <main>
+    <label for="sort-by">Sort By:</label>
+    <select id="sort-by">
+      <option value="date_created">Date Created</option>
+      <option value="status">Status</option>
+      <option value="location_name">Location</option>
+      <option value="assigned_to">Assigned To</option>
+    </select>
+
+    <table id="dashboard-table">
+      <thead>
+        <tr>
+          <th>Issue</th>
+          <th>Status</th>
+          <th>Assigned To</th>
+          <th>Assigned By</th>
+          <th>Location</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

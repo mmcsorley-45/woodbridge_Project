@@ -17,7 +17,20 @@
       <ul id="tickets"></ul>
     </div>
   </div>
-
+<div id="ticket-list">
+  <h2>📝 Create Tickets </h2>
+  <a href="/create.html" id="create-btn">➕ Create Ticket</a>
+  <a href="/dashboard.html" id="dashboard-btn">📊 Ticket Dashboard</a>
+  <form id="ticket-form" style="display: none;">
+    <input type="text" id="issue" placeholder="Issue" required />
+    <textarea id="description" placeholder="Description" required></textarea>
+    <input type="text" id="assigned_to" placeholder="Assigned To" />
+    <input type="text" id="assigned_by" placeholder="Assigned By" />
+    <select id="location_id" required></select>
+    <button type="submit">Submit</button>
+  </form>
+  <ul id="tickets"></ul>
+</div>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="map.js"></script>
 </body>
